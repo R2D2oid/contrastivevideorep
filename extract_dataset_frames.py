@@ -2,7 +2,7 @@ import argparse
 from utils import sys_utils
 from utils import video_utils
 
-def extract_dataset_frames(dataset_name, dataset_dir, output_dir, resizing_dims = (-1,-1)):
+def extract_dataset_frames(dataset_name, dataset_dir, output_dir, resizing_dims = (-1,-1), sample_rate='fixed-16'):
 	'''
 	Given a list of video paths extracts their frames into corresponding folders under the output_dir
 	Input:
@@ -23,15 +23,33 @@ def extract_dataset_frames(dataset_name, dataset_dir, output_dir, resizing_dims 
 
 		# list of filepath
 		video_paths = sys_utils.get_files_path('{}/videos'.format(dataset_dir))
-
+		empty_videos = []
 		for vpath in video_paths:
 			video_name = vpath.split('/')[-1]
 			fdir = '{}/{}'.format(output_dir, video_name)
 			print('extracting frames to', fdir)
 			sys_utils.create_folder(fdir)
-			count = video_utils.get_video_frames(vpath, fdir, fps = 30, resizing_dims = resizing_dims)
+			sr = sample_rate.split('-')
+			if len(sr)!=2:
+				print('invalid sample rate!\n ex. fixed-xx, fps-xx, fixed-16, fps-30')
+				return -1
+			sample_method,sample_cnt = sr[0],int(sr[1])
+			if sample_method=='fixed':
+				try:
+					fps, duration, num_frames = video_utils.get_video_information(vpath)
+					fps = float(sample_cnt)/duration
+				except Exception as e:
+					print(vpath, e)
+					empty_videos.append(vpath)
+				count = video_utils.get_video_frames(vpath, fdir, fps = fps, resizing_dims = resizing_dims)
+			elif sample_method=='fps':
+				fps = sample_cnt
+				count = video_utils.get_video_frames(vpath, fdir, fps = fps, resizing_dims = resizing_dims)
+			else:
+				print('invalid sampling method!')
+				return -1
 			print('completed extracting {} frames'.format(count))
-
+            
 		return len(video_paths)
 
 	# extract UCF101 frames
@@ -65,20 +83,21 @@ if __name__ == '__main__':
 
 	parser = argparse.ArgumentParser ()
 	parser.add_argument('--dataset_name', dest = 'dataset_name', default = 'Tempuckey', help = 'provide the dataset name. ex. Tempuckey; UFC101')
-	parser.add_argument('--dataset_dir',  dest = 'dataset_dir',  default = '/home/pishu/Desktop/repos/datasets/Tempuckey', help = 'provide the path to dataset directory that contains the videos folder')
-	parser.add_argument('--output_dir',   dest = 'output_dir',   default = '/home/pishu/Desktop/repos/datasets/Tempuckey/frames', help = 'provide output directory where the frames should be stored at')
+	parser.add_argument('--dataset_dir',  dest = 'dataset_dir',  default = '/path/to/dataset', help = 'provide the path to dataset directory that contains the videos folder')
+	parser.add_argument('--output_dir',   dest = 'output_dir',   default = '/path/to/dataset/frames', help = 'provide output directory where the frames should be stored at')
 
 	args = parser.parse_args()
 
 	## python3 extract_dataset_frames.py --dataset_name 'Tempuckey' --dataset_dir '/home/pishu/Desktop/repos/datasets/Tempuckey' --output_dir '/home/pishu/Desktop/repos/datasets/Tempuckey/frames'
-	# extract_dataset_frames(dataset_name = args.dataset_name,	#'Tempuckey',
-	# 						 dataset_dir = args.dataset_dir, 	#'/home/pishu/Desktop/repos/datasets/Tempuckey',
-	# 						 output_dir = args.output_dir,		#'/home/pishu/Desktop/repos/datasets/Tempuckey/frames',
-	# 						 resizing_dims = (-1,-1))
+	extract_dataset_frames(dataset_name = args.dataset_name,
+							 dataset_dir = args.dataset_dir, 
+							 output_dir = args.output_dir,
+							 resizing_dims = (-1,-1),
+							 sample_rate = 'fixed-16')
 
 	## python3 extract_dataset_frames.py --dataset_name 'UCF101' --dataset_dir '/home/pishu/Desktop/repos/datasets/UCF101' --output_dir '/home/pishu/Desktop/repos/datasets/UCF101/frames'
-	extract_dataset_frames(dataset_name = args.dataset_name,	#'UCF101',
-						  dataset_dir = args.dataset_dir, 		#'/home/pishu/Desktop/repos/datasets/UCF101',
-						  output_dir = args.output_dir,			#'/home/pishu/Desktop/repos/datasets/UCF101/frames',
-						  resizing_dims = (-1,-1))
+# 	extract_dataset_frames(dataset_name = args.dataset_name,
+# 						  dataset_dir = args.dataset_dir,
+# 						  output_dir = args.output_dir,
+# 						  resizing_dims = (-1,-1))
 

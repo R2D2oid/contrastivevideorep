@@ -24,10 +24,10 @@ def resize_dims(current_dims, resizing_dims):
     Input: 
         current_dims: (w,h)
         resizing_dims: float tuple (target_w, target_h)
-                     resize the smaller dim target_dim[0]; and 
+                     resize the smaller dim to target_dim[0]; and 
                      resize the larger dim to target_dim[1]; and
                      if target_dim[0] or target_dim[1] is set to -1, the dims change while preserving the aspect ratio;
-                     if target_dim = (-1,-1) there is no resizing. the original sims are maintained. 
+                     if target_dim = (-1,-1) there is no resizing. the original dims are maintained. 
     Output:
         int tuple (new_w, new_h)
     '''
@@ -158,7 +158,7 @@ def get_video_information(video_path):
         video_path: string path to the video
 
     Returns:
-        list: [fps as float, duration(sec) as float, number_of_frames as int] 
+        tuple: (fps as float, duration(sec) as float, number_of_frames as int)
     '''
     cap = cv2.VideoCapture(video_path)
     
@@ -166,5 +166,5 @@ def get_video_information(video_path):
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     duration = num_frames/fps
     
-    return [fps, duration, num_frames]
+    return (fps, duration, num_frames)
 
