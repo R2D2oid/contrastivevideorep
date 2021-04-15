@@ -22,7 +22,7 @@ def extract_dataset_frames(dataset_name, dataset_dir, output_dir, resizing_dims 
 		sys_utils.create_folder(output_dir)
 
 		# list of filepath
-		video_paths = sys_utils.get_files_path('{}/videos'.format(dataset_dir))
+		video_paths = sys_utils.get_files_path(dataset_dir)
 		empty_videos = []
 		for vpath in video_paths:
 			video_name = vpath.split('/')[-1]
@@ -57,7 +57,7 @@ def extract_dataset_frames(dataset_name, dataset_dir, output_dir, resizing_dims 
 		sys_utils.create_folder(output_dir)
 
 		# list of filepath
-		category_paths = sys_utils.get_subfolders_path('{}/videos'.format(dataset_dir))
+		category_paths = sys_utils.get_subfolders_path(dataset_dir)
 		category_names = [d.split('/')[-1] for d in category_paths]
 		for n in category_names:
 			sys_utils.create_folder('{}/{}'.format(output_dir, n))
@@ -88,14 +88,14 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	## python3 extract_dataset_frames.py --dataset_name 'Tempuckey' --dataset_dir '/home/pishu/Desktop/repos/datasets/Tempuckey' --output_dir '/home/pishu/Desktop/repos/datasets/Tempuckey/frames'
+	## python3 extract_dataset_frames.py --dataset_name 'Tempuckey' --dataset_dir '/usr/local/data02/zahra/datasets/Tempuckey/sentence_segments/videos' --output_dir '/usr/local/data02/zahra/datasets/Tempuckey/sentence_segments/frames2'
 	extract_dataset_frames(dataset_name = args.dataset_name,
 							 dataset_dir = args.dataset_dir, 
 							 output_dir = args.output_dir,
 							 resizing_dims = (-1,-1),
 							 sample_rate = 'fixed-16')
 
-	## python3 extract_dataset_frames.py --dataset_name 'UCF101' --dataset_dir '/home/pishu/Desktop/repos/datasets/UCF101' --output_dir '/home/pishu/Desktop/repos/datasets/UCF101/frames'
+	## python3 extract_dataset_frames.py --dataset_name 'UCF101' --dataset_dir '/home/pishu/Desktop/repos/datasets/UCF101/videos' --output_dir '/home/pishu/Desktop/repos/datasets/UCF101/frames'
 # 	extract_dataset_frames(dataset_name = args.dataset_name,
 # 						  dataset_dir = args.dataset_dir,
 # 						  output_dir = args.output_dir,
