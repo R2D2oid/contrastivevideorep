@@ -8,11 +8,7 @@ from utils import sys_utils
 from utils import video_utils
 
 def get_model(model_name):
-    if model_name == 'resnet18':
-        model = models.resnet18(pretrained=True)
-    else:
-        raise ValueError('invalid model name!')
-        
+    model = getattr(models, model_name)(pretrained=True)
     model.eval()
     return model
 
@@ -107,8 +103,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    ## python3 extract_feats.py --dataset_frames_dir '/usr/local/data02/zahra/datasets/Tempuckey/sentence_segments/frames' --output_dir '/usr/local/data02/zahra/datasets/Tempuckey/sentence_segments/feats/resent18' --model_name resnet18
+    ## python3 extract_dataset_feats.py --dataset_frames_dir '/usr/local/data02/zahra/datasets/Tempuckey/sentence_segments/frames' --output_dir '/usr/local/data02/zahra/datasets/Tempuckey/sentence_segments/feats/resent18' --model_name resnet18
     extract_dataset_feats(dataset_frames_dir = args.dataset_frames_dir,
                              output_dir = args.output_dir,
                              model_name = args.model_name)
+    
 
