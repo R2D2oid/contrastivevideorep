@@ -143,7 +143,12 @@ def display_video_information(video_path):
     
     fps = cap.get(cv2.CAP_PROP_FPS)
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    duration = num_frames/fps
+    
+    try:
+        duration = num_frames/fps
+    except ZeroDivisionError as e:
+        # print(e, video_path, '\n')
+        duration = 0
 
     print('fps = {}'.format(fps))
     print('number of frames = {}'.format(num_frames))
@@ -164,7 +169,12 @@ def get_video_information(video_path):
     
     fps = cap.get(cv2.CAP_PROP_FPS)
     num_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    duration = num_frames/fps
+ 
+    try:
+        duration = num_frames/fps
+    except ZeroDivisionError as e:
+        # print(e, video_path, '\n')
+        duration = 0
     
     return (fps, duration, num_frames)
 
